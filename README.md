@@ -1,6 +1,6 @@
 # Docker Compose Web Server Mysql Shared
 
-## Docker Compose based web server stack with Nginx, Laravel and Shared Mysql
+### Docker Compose based web server stack with Nginx, Laravel and Shared Mysql
 
 - Container Architecture:
   - Db Shared Container: mariadb:11.4

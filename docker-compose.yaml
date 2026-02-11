@@ -1,0 +1,32 @@
+services:
+  db:
+    image: ${DB_IMAGE}
+    container_name: "${DB_CONTAINER_NAME}"
+    restart: unless-stopped
+    volumes:
+      - ./mysql/dbdata:/var/lib/mysql
+      - ./mysql/conf.d:/etc/mysql/conf.d:ro
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      TZ: ${TZ}
+    networks:
+      - laravel_netshared
+
+  phpmyadmin:
+    image: ${PHPMYADMIN_IMAGE}
+    container_name: "${PMYADMIN_CONTAINER_NAME}"
+    restart: unless-stopped
+    ports:
+      # - "${PORT_PMYADMIN}:80"
+      - "192.168.1.103:${PORT_PMYADMIN}:80" # bind IP server
+    environment:
+      PMA_HOST: ${PMA_HOST}
+      PMA_PORT: ${PMA_PORT}
+      UPLOAD_LIMIT: ${UPLOAD_LIMIT}
+    networks:
+      - laravel_netshared
+
+networks:
+  laravel_netshared:
+    name: laravel_netshared
+    driver: bridge

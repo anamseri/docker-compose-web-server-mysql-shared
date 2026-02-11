@@ -1,0 +1,11 @@
+Dockerfile linguist-language=Docker
+
+*.php linguist-vendored
+*.blade.php linguist-vendored
+resources/js/** linguist-vendored
+resources/css/** linguist-vendored
+*.js linguist-vendored
+*.ts linguist-vendored
+package.json linguist-vendored
+vite.config.js linguist-vendored
+node_modules/** linguist-vendored

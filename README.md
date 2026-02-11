@@ -19,6 +19,7 @@
 │ │ │  │ └── my.cnf
 │ │ ├── .env
 │ │ ├── create_database.sh
+│ │ ├── set-permissions.sh
 │ │ └── docker-compose.yaml
 ├ {APP_DIR}/                   <-- App1
 │ ...

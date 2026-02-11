@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-#######################################
-# Helper
-#######################################
 error() {
   echo "❌ $1" >&2
   exit 1
@@ -17,9 +14,6 @@ warn() {
   echo "⚠ $1"
 }
 
-#######################################
-# Parse arguments
-#######################################
 APP_NAME=""
 CUSTOM_ENV=""
 MODE="create"
@@ -56,9 +50,6 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-#######################################
-# Load MySQL infra env
-#######################################
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MYSQL_ENV="${SCRIPT_DIR}/.env"
 
@@ -68,17 +59,11 @@ set -o allexport
 source <(sed 's/\r$//' "$MYSQL_ENV")
 set +o allexport
 
-#######################################
-# Resolve PROJECT_DIR
-#######################################
 if [[ -z "${PROJECT_DIR:-}" ]]; then
   PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
   info "PROJECT_DIR auto-detected: $PROJECT_DIR"
 fi
 
-#######################################
-# Resolve APP env
-#######################################
 if [[ -n "$CUSTOM_ENV" ]]; then
   APP_ENV="$CUSTOM_ENV"
 else
@@ -93,9 +78,6 @@ set -o allexport
 source <(sed 's/\r$//' "$APP_ENV")
 set +o allexport
 
-#######################################
-# Validate variables
-#######################################
 REQUIRED_VARS=(
   DB_DATABASE
   DB_USERNAME
@@ -109,15 +91,9 @@ for VAR in "${REQUIRED_VARS[@]}"; do
   [[ -n "${!VAR:-}" ]] || error "Missing env variable: $VAR"
 done
 
-#######################################
-# Validate DB container
-#######################################
 docker ps --format '{{.Names}}' | grep -qx "$DB_CONTAINER_NAME" \
   || error "DB container not running: $DB_CONTAINER_NAME"
 
-#######################################
-# DROP MODE (SAFE)
-#######################################
 if [[ "$MODE" == "drop" ]]; then
   warn "Perform a backup before drop the database. This action cannot be undone."
   warn "Preparing to DROP database & user: $DB_DATABASE"
@@ -135,7 +111,6 @@ if [[ "$MODE" == "drop" ]]; then
       2>/dev/null
   )
 
-  # 🔒 STOP IMMEDIATELY IF DB NOT EXISTS
   if [[ -z "$DB_EXISTS" ]]; then
     warn "Database '$DB_DATABASE' does NOT exist."
     warn "Drop aborted.."
@@ -144,7 +119,7 @@ if [[ "$MODE" == "drop" ]]; then
 
   info "Database exists. Proceeding with drop..."
 
-  warn "⚠️  WARNING: YOU ARE ABOUT TO DROP DATABASE"
+  warn "WARNING: YOU ARE ABOUT TO DROP DATABASE"
   echo "  Database : $DB_DATABASE"
   echo "  User     : $DB_USERNAME"
   echo
@@ -172,9 +147,6 @@ SQL
   exit 0
 fi
 
-#######################################
-# CREATE MODE (DEFAULT)
-#######################################
 info "Creating database: $DB_DATABASE"
 info "Creating user: $DB_USERNAME"
 

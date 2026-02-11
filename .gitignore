@@ -7,5 +7,6 @@ Thumbs.db
 .env.production
 Readme-bku.md
 crud_database.sh
+create_database_bku.sh
 /docker/secrets/
 /docker/secrets/*
